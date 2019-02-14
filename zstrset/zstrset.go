@@ -30,17 +30,17 @@ func (z *zstrset) each(f func(group, val []byte)) {
 
 func makezstrset(tags []string) zstrset {
 	nbyte := 0
-
 	meta := make([]int, len(tags)*2)
 
+	// Loop 1: calc total size and meta
 	for i, t := range tags {
 		nbyte += len(t)
-
 		meta[i*2] = len(t)
 		meta[i*2+1] = strings.IndexByte(t, ':')
 	}
 
-	// 2nd loop to avoid expensive realloc
+	// Loop 2: copy tags to contiguous memory now that we
+	// know the exact data size.
 	data := make([]byte, 0, nbyte)
 	for _, t := range tags {
 		data = append(data, t...)
